@@ -118,9 +118,10 @@ Examples:
 */
 
 function bind(fn, thisArg){
-    var firstArgs = [].slice.call(arguments,2);
+    var outerArgs = [].slice.call(arguments,2);
     return function() {
-        var allArgs = firstArgs.concat([].slice.call(arguments));
+        var innerArgs = [].slice.call(arguments);
+        var allArgs = outerArgs.concat(innerArgs);
         return fn.apply(thisArg, allArgs);
     };
 }
@@ -158,12 +159,11 @@ Examples:
 
 
 function flip(fn, thisArg){
-    var firstArgs = [].slice.call(arguments,2);
+    var outerArgs = [].slice.call(arguments,2);
     return function() {
-        var allArgsReversed = firstArgs
-            .concat([].slice.call(arguments))
-            .slice(0, fn.length).reverse();
-        return fn.apply(thisArg, allArgsReversed);
+        var innerArgs = [].slice.call(arguments);
+        var allArgs = outerArgs.concat(innerArgs).slice(0, fn.length);
+        return fn.apply(thisArg, allArgs.reverse());
     };
 }
 
