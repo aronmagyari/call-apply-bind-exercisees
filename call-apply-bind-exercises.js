@@ -9,7 +9,7 @@ Examples:
 */
 
 function arrayFrom(arrayLikeObject){
-    
+    return [].slice.call(arrayLikeObject);
 }
 
 /* 
@@ -22,7 +22,12 @@ Examples:
 */
 
 function sumEvenArguments(){
-    
+    return [].slice.call(arguments).reduce(function(acc, next) {
+        if (next % 2 === 0) {
+            acc = acc + next;
+        }
+        return acc;
+    }, 0);
 }
 
 /* 
@@ -43,7 +48,12 @@ Examples:
 */
 
 function invokeMax(fn, num){
-    
+    var count = 0;
+    return function() {
+        if(count >= num) return "Maxed Out!";
+        count++; 
+        return fn.apply(this, arguments);  
+    };
 }
 
 /* 
@@ -63,13 +73,20 @@ Examples:
 */
 
 function once(fn, thisArg){
-    
+    var invoked = false;
+    return function() {
+        if (!invoked) {
+            invoked=true;
+            return fn.apply(thisArg, arguments);
+        }
+    };
 }
 
 // BONUSES! 
 
 /* 
-Write a function called bind which accepts a function and a value for the keyword this. Bind should return a new function that when invoked, will invoke the function passed to bind with the correct value of the keyword this. HINT - if you pass more than two parameters to bind, those parameters should be included as parameters to the inner function when it is invoked. You will have to make use of closure!
+Write a function called bind which accepts a function and a value for the keyword this. Bind should return a new function that when invoked, will invoke the function passed to bind with the correct value of the keyword this. 
+HINT - if you pass more than two parameters to bind, those parameters should be included as parameters to the inner function when it is invoked. You will have to make use of closure!
 
 Examples:
 
@@ -101,11 +118,16 @@ Examples:
 */
 
 function bind(fn, thisArg){
-    
+    var firstArgs = [].slice.call(arguments,2);
+    return function() {
+        var allArgs = firstArgs.concat([].slice.call(arguments));
+        return fn.apply(thisArg, allArgs);
+    };
 }
 
 /* 
-Write a function called flip which accepts a function and a value for the keyword this. Flip should return a new function that when invoked, will invoke the function passed to flip with the correct value of the keyword this and all of the arguments passed to the function REVERSED. HINT - if you pass more than two parameters to flip, those parameters should be included as parameters to the inner function when it is invoked. You will have to make use of closure!
+Write a function called flip which accepts a function and a value for the keyword this. 
+Flip should return a new function that when invoked, will invoke the function passed to flip with the correct value of the keyword this and all of the arguments passed to the function REVERSED. HINT - if you pass more than two parameters to flip, those parameters should be included as parameters to the inner function when it is invoked. You will have to make use of closure!
 
 Examples:
 
@@ -136,7 +158,13 @@ Examples:
 
 
 function flip(fn, thisArg){
-    
+    var firstArgs = [].slice.call(arguments,2);
+    return function() {
+        var allArgsReversed = firstArgs
+            .concat([].slice.call(arguments))
+            .slice(0, fn.length).reverse();
+        return fn.apply(thisArg, allArgsReversed);
+    };
 }
 
 
